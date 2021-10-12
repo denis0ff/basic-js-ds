@@ -69,82 +69,37 @@ module.exports = class BinarySearchTree {
   }
 
   remove(data) {
-    if (this.isEmpty()) {
-      return this;
-    }
-    return removeNode(this._root, null);
+    deleteRec(this._root, data);
+    function deleteRec(root, data) {
+      if (root == null) return root;
+      if (data < root.data) root.left = deleteRec(root.left, data);
+      else if (data > root.data) root.right = deleteRec(root.right, data);
+      else {
+        if (root.left == null) return root.right;
+        else if (root.right == null) return root.left;
+        root.data = minValue(root.right);
 
-    function removeNode(node, parent, leftOrRight) {
-      if (node.data === data) {
-        return actualRemoval(node, parent, leftOrRight);
+        root.right = deleteRec(root.right, root.data);
       }
-      if (data < node.data) {
-        if (!node.left) {
-          return;
-        } else {
-          return removeNode(node.left, node, "l");
-        }
-      } else {
-        if (!node.right) {
-          return;
-        } else {
-          return removeNode(node.right, node, "r");
-        }
-      }
+      return root;
     }
-    function actualRemoval(node, parent, leftOrRight) {
-      let tmp = Object.assign(node);
-      if (!node.left && !node.right) {
-        if (parent) {
-          if (leftOrRight === "l") {
-            parent.left = null;
-          } else {
-            parent.right = null;
-          }
-        } else {
-          node = null;
-        }
-        return tmp;
+
+    function minValue(root) {
+      let minv = root.data;
+      while (root.left != null) {
+        minv = root.left.data;
+        root = root.left;
       }
-      if (!node.left) {
-        if (parent) {
-          if (leftOrRight === "l") {
-            parent.left = node.right;
-          } else {
-            parent.right = node.right;
-          }
-        } else {
-          node = node.right;
-        }
-        return tmp;
-      }
-      if (!node.right) {
-        if (parent) {
-          if (leftOrRight === "l") {
-            parent.left = node.leftt;
-          } else {
-            parent.right = node.left;
-          }
-        } else {
-          node = node.left;
-        }
-        return tmp;
-      }
-      node.data = popMin(node.right, node, "r").data;
-      return tmp;
+      return minv;
     }
-    function popMin(node, parent, leftOrRight) {
-      if (!node.left) {
-        let tmp = Object.assign(node);
-        if (leftOrRight == "l") {
-          parent.left = node.right;
-        } else {
-          parent.right = node.right;
-        }
-        return tmp;
-      }
-      return popMin(node.left, node, "l");
-    }
+  }
+
+  /// helper function to find the smallest node
+
+  kthSmallestNode(node) {
+    while (!node.left === null) node = node.left;
+
+    return node;
   }
 
   min() {
